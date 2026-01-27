@@ -17,7 +17,8 @@ chained-auth-poc/
 ## Technology Stack
 
 - **Gradle**: 9.3.0 (latest version)
-- **Spring Boot**: 3.4.2
+- **Spring Boot**: 4.0.2
+- **Spring Security**: 7.0 (with integrated OAuth2 Authorization Server)
 - **Java**: 21
 - **Spring Dependency Management**: 1.1.7
 
