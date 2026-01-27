@@ -65,9 +65,11 @@ spring:
             client-id: client
             client-secret: secret
             authorization-grant-type: authorization_code
-            redirect-uri: http://127.0.0.1:8081/login/oauth2/code/auth-adapter
+            redirect-uri: http://127.0.0.1:8080/login/oauth2/code/auth-adapter
             scope: openid,profile,read
         provider:
           auth-adapter:
             issuer-uri: http://localhost:9000
 ```
+
+**Note**: Update the `redirect-uri` to match your application's port and callback path.
