@@ -7,7 +7,8 @@ A multi-module Gradle project demonstrating Spring Boot applications with a chai
 ```
 chained-auth-poc/
 ├── applications/          # Spring Boot application modules
-│   └── auth-adapter/     # Spring Authorization Server (port 9000)
+│   ├── auth-adapter/     # Spring Authorization Server (port 9000)
+│   └── test-app/         # OAuth2 test client application (port 8080)
 ├── gradle/               # Gradle wrapper files
 ├── build.gradle.kts      # Root build configuration
 ├── settings.gradle.kts   # Multi-module settings
@@ -34,6 +35,15 @@ chained-auth-poc/
 - **Purpose**: Acts as an OAuth2 Authorization Server that federates authentication to GitHub
 - See [Auth Adapter README](applications/auth-adapter/README.md) for setup instructions
 
+### Test App
+- **Port**: 8080
+- **Type**: OAuth2 Client application for testing authentication flow
+- **Endpoints**:
+  - Home: `http://localhost:8080/`
+  - Authenticated: `http://localhost:8080/authenticated` (requires login)
+- **Purpose**: Demonstrates OAuth2 authentication flow and displays access tokens
+- See [Test App README](applications/test-app/README.md) for details
+
 ## Getting Started
 
 ### Prerequisites
@@ -52,6 +62,19 @@ Run Auth Adapter (requires GitHub OAuth setup):
 ./gradlew :applications:auth-adapter:bootRun
 ```
 
+Run Test App:
+```bash
+./gradlew :applications:test-app:bootRun
+```
+
+**Testing the Complete Flow:**
+1. Start auth-adapter on port 9000
+2. Start test-app on port 8080
+3. Open http://localhost:8080 in your browser
+4. Click "Login with Auth Adapter"
+5. Authenticate with GitHub (via auth-adapter)
+6. View your access token and user information
+
 ### Run Tests
 
 ```bash
@@ -66,6 +89,7 @@ Run Auth Adapter (requires GitHub OAuth setup):
 
 The JAR files will be available at:
 - `applications/auth-adapter/build/libs/auth-adapter.jar`
+- `applications/test-app/build/libs/test-app.jar`
 
 ## Adding New Applications
 
@@ -92,8 +116,9 @@ To add a new application to the `applications` folder:
 
 ## Health Checks
 
-The application exposes actuator endpoints:
+The applications expose actuator endpoints:
 - Auth Adapter: `http://localhost:9000/actuator/health`
+- Test App: `http://localhost:8080/actuator/health`
 
 ## CI/CD
 
