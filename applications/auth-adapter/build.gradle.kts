@@ -12,7 +12,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     
     // Spring Authorization Server
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server:1.3.2")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server:7.0.2")
     
     // For JWT support
     implementation("org.springframework.security:spring-security-oauth2-jose")
