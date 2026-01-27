@@ -7,8 +7,7 @@ A multi-module Gradle project demonstrating Spring Boot applications with a chai
 ```
 chained-auth-poc/
 ├── applications/          # Spring Boot application modules
-│   ├── app1/             # First application (port 8081)
-│   └── app2/             # Second application (port 8082)
+│   └── auth-adapter/     # Spring Authorization Server (port 9000)
 ├── gradle/               # Gradle wrapper files
 ├── build.gradle.kts      # Root build configuration
 ├── settings.gradle.kts   # Multi-module settings
@@ -34,16 +33,6 @@ chained-auth-poc/
 - **Purpose**: Acts as an OAuth2 Authorization Server that federates authentication to GitHub
 - See [Auth Adapter README](applications/auth-adapter/README.md) for setup instructions
 
-### App1
-- **Port**: 8081
-- **Endpoint**: `http://localhost:8081/`
-- **Response**: "Hello from App1!"
-
-### App2
-- **Port**: 8082
-- **Endpoint**: `http://localhost:8082/`
-- **Response**: "Hello from App2!"
-
 ## Getting Started
 
 ### Prerequisites
@@ -62,16 +51,6 @@ Run Auth Adapter (requires GitHub OAuth setup):
 ./gradlew :applications:auth-adapter:bootRun
 ```
 
-Run App1:
-```bash
-./gradlew :applications:app1:bootRun
-```
-
-Run App2:
-```bash
-./gradlew :applications:app2:bootRun
-```
-
 ### Run Tests
 
 ```bash
@@ -86,8 +65,6 @@ Run App2:
 
 The JAR files will be available at:
 - `applications/auth-adapter/build/libs/auth-adapter.jar`
-- `applications/app1/build/libs/app1.jar`
-- `applications/app2/build/libs/app2.jar`
 
 ## Adding New Applications
 
@@ -114,10 +91,8 @@ To add a new application to the `applications` folder:
 
 ## Health Checks
 
-All applications expose actuator endpoints:
+The application exposes actuator endpoints:
 - Auth Adapter: `http://localhost:9000/actuator/health`
-- App1: `http://localhost:8081/actuator/health`
-- App2: `http://localhost:8082/actuator/health`
 
 ## CI/CD
 
