@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticated - Access Token</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .success-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .token-display {
+            background: #1e293b;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px 20px;
+            margin: 20px 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .scope-tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+        }
+        
+        .expiry-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .expiry-success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+        
+        .attribute-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .attribute-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .attribute-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attribute-key {
+            font-weight: 600;
+            color: #667eea;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>✅ Authentication Successful!</h1>
+            <div class="success-badge">Connected to <span th:text="${clientName}">Auth Adapter</span></div>
+            
+            <h2>🔑 Access Token</h2>
+            <div class="token-display">
+                <button class="copy-btn" onclick="copyToken()">Copy</button>
+                <div id="tokenValue" th:text="${tokenInfo.tokenValue}">token_here</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-label">Token Type:</div>
+                <div class="info-value" th:text="${tokenInfo.tokenType}">Bearer</div>
+                
+                <div class="info-label">Issued At:</div>
+                <div class="info-value" th:text="${tokenInfo.issuedAt}">timestamp</div>
+                
+                <div class="info-label">Expires At:</div>
+                <div class="info-value" th:text="${tokenInfo.expiresAt}">timestamp</div>
+                
+                <div class="info-label">Scopes:</div>
+                <div class="info-value">
+                    <span th:each="scope : ${tokenInfo.scopes}" class="scope-tag" th:text="${scope}">scope</span>
+                </div>
+            </div>
+            
+            <div th:if="${tokenInfo.expiresIn != null}">
+                <div th:if="${tokenInfo.expiresIn > 300}" class="expiry-success">
+                    ⏰ Token expires in <strong th:text="${tokenInfo.expiresIn}">seconds</strong> seconds
+                </div>
+                <div th:if="${tokenInfo.expiresIn <= 300}" class="expiry-warning">
+                    ⚠️ Token expires soon! Only <strong th:text="${tokenInfo.expiresIn}">seconds</strong> seconds remaining
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" th:if="${userInfo.name != null}">
+            <h2>👤 User Information</h2>
+            <div class="info-grid">
+                <div class="info-label">Name:</div>
+                <div class="info-value" th:text="${userInfo.name}">User Name</div>
+            </div>
+            
+            <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">All Attributes:</h3>
+            <div class="attribute-list">
+                <div th:each="entry : ${userInfo.attributes}" class="attribute-item">
+                    <span class="attribute-key" th:text="${entry.key}">key</span>
+                    <span th:text="${entry.value}">value</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <a href="/" class="back-btn">← Back to Home</a>
+        </div>
+    </div>
+    
+    <script>
+        function copyToken() {
+            const tokenText = document.getElementById('tokenValue').innerText;
+            navigator.clipboard.writeText(tokenText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
