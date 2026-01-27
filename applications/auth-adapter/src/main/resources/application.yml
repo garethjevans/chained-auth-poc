@@ -2,6 +2,10 @@ spring:
   application:
     name: auth-adapter
   
+  session:
+    cookie:
+      name: AUTH_ADAPTER_SESSION
+  
   security:
     oauth2:
       client:

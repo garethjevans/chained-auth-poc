@@ -127,13 +127,13 @@ public class AuthorizationServerConfig {
 
     @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:9000/oauth2/jwks").build();
+        return NimbusJwtDecoder.withJwkSetUri("http://127.0.0.1:9000/oauth2/jwks").build();
     }
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:9000")
+                .issuer("http://127.0.0.1:9000")
                 .build();
     }
 }

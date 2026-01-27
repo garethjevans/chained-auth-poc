@@ -2,6 +2,10 @@ spring:
   application:
     name: test-app
 
+  session:
+    cookie:
+      name: TEST_APP_SESSION
+
   security:
     oauth2:
       client:
@@ -17,7 +21,7 @@ spring:
               - read
         provider:
           auth-adapter:
-            issuer-uri: http://localhost:9000
+            issuer-uri: http://127.0.0.1:9000
 
 server:
   port: 8080
