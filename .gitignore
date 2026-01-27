@@ -29,3 +29,7 @@ bin/
 # Spring Boot
 application-local.yml
 application-local.properties
+
+# Environment variables
+.envrc
+.env
