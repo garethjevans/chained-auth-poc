@@ -35,7 +35,7 @@ The application will start on **port 8080**.
 
 ### Access the Application
 
-1. Open your browser to: http://localhost:8080
+1. Open your browser to: http://127.0.0.1:8080
 2. Click "Login with Auth Adapter"
 3. You'll be redirected through the authentication flow:
    - Auth Adapter → GitHub → Auth Adapter → Test App
@@ -43,7 +43,7 @@ The application will start on **port 8080**.
 
 ## Configuration
 
-The test-app is configured to connect to the auth-adapter running on `http://localhost:9000`.
+The test-app is configured to connect to the auth-adapter running on `http://127.0.0.1:9000`.
 
 ### OAuth2 Client Configuration
 
@@ -65,7 +65,7 @@ spring:
               - read
         provider:
           auth-adapter:
-            issuer-uri: http://localhost:9000
+            issuer-uri: http://127.0.0.1:9000
 ```
 
 ## Endpoints
@@ -128,7 +128,7 @@ You need both applications running:
 
 1. Ensure auth-adapter is properly configured with GitHub OAuth credentials
 2. Start both applications
-3. Navigate to http://localhost:8080
+3. Navigate to http://127.0.0.1:8080
 4. Test the complete authentication flow
 5. Verify token is displayed correctly
 

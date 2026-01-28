@@ -70,7 +70,7 @@ BUILD SUCCESSFUL in 34s
 To use the auth-adapter:
 
 1. Create a GitHub OAuth application at: https://github.com/settings/developers
-2. Set the authorization callback URL to: `http://localhost:9000/login/oauth2/code/github`
+2. Set the authorization callback URL to: `http://127.0.0.1:9000/login/oauth2/code/github`
 3. Export environment variables:
    ```bash
    export GITHUB_CLIENT_ID=your-client-id
@@ -80,6 +80,6 @@ To use the auth-adapter:
    ```bash
    ./gradlew :applications:auth-adapter:bootRun
    ```
-5. Access the authorization server at: http://localhost:9000
+5. Access the authorization server at: http://127.0.0.1:9000
 
 The auth-adapter can now serve as the authentication provider for app1 and app2, creating a chained authentication flow where users authenticate with GitHub, and the auth-adapter issues tokens for the other applications.

@@ -71,8 +71,8 @@ To use GitHub as a secondary authentication source, create a GitHub OAuth applic
 2. Click "New OAuth App"
 3. Fill in the application details:
    - **Application name**: Your application name
-   - **Homepage URL**: `http://localhost:9000`
-   - **Authorization callback URL**: `http://localhost:9000/login/oauth2/code/github`
+   - **Homepage URL**: `http://127.0.0.1:9000`
+   - **Authorization callback URL**: `http://127.0.0.1:9000/login/oauth2/code/github`
 4. Click "Register application"
 5. Copy the **Client ID** and generate a **Client Secret**
 
