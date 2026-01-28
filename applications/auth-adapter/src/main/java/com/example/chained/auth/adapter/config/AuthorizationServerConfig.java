@@ -38,9 +38,13 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 public class AuthorizationServerConfig {
 
   private final OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer;
+  private final ChainedAuthenticationSuccessHandler authenticationSuccessHandler;
 
-  public AuthorizationServerConfig(OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer) {
+  public AuthorizationServerConfig(
+      OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer,
+      ChainedAuthenticationSuccessHandler authenticationSuccessHandler) {
     this.tokenCustomizer = tokenCustomizer;
+    this.authenticationSuccessHandler = authenticationSuccessHandler;
   }
 
   @Bean
@@ -74,7 +78,11 @@ public class AuthorizationServerConfig {
                     .anyRequest()
                     .authenticated())
         // OAuth2 login with test-auth-server as primary authentication
-        .oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server"));
+        .oauth2Login(
+            oauth2 ->
+                oauth2
+                    .loginPage("/oauth2/authorization/test-auth-server")
+                    .successHandler(authenticationSuccessHandler));
 
     return http.build();
   }

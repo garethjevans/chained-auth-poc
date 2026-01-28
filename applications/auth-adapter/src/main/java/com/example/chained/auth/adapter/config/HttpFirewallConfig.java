@@ -7,8 +7,8 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 /**
  * Configures the HTTP firewall to allow OAuth2-specific URL patterns. The default
- * StrictHttpFirewall blocks semicolons which can appear in OAuth2 authorization requests (e.g., in
- * JSESSIONID or encoded parameters).
+ * StrictHttpFirewall blocks semicolons and double slashes which can appear in OAuth2 authorization
+ * requests and redirects.
  */
 @Configuration
 public class HttpFirewallConfig {
@@ -19,6 +19,9 @@ public class HttpFirewallConfig {
 
     // Allow semicolons in URLs (needed for OAuth2 flows with JSESSIONID)
     firewall.setAllowSemicolon(true);
+
+    // Allow double slashes (needed for OAuth2 redirect URIs)
+    firewall.setAllowUrlEncodedDoubleSlash(true);
 
     // Keep other strict security settings enabled
     firewall.setAllowUrlEncodedSlash(false);
