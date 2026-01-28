@@ -228,6 +228,49 @@ This configuration is designed for local development and testing:
 - Ensure all services are running
 - Use `127.0.0.1` consistently (not mixing with `localhost`)
 
+### Issue: "invalid_request" - OAuth 2.0 Parameter: redirect_uri
+
+**Symptom:** Error message: `Authorization request failed: [invalid_request] OAuth 2.0 Parameter: redirect_uri`
+
+**Root Cause:** The redirect URI sent in the OAuth2 request doesn't match what's registered in the authorization server.
+
+**Common Causes:**
+1. **Mixing `localhost` and `127.0.0.1`**: Browser accessing via `localhost` but redirect URI uses `127.0.0.1` (or vice versa)
+2. **Port mismatch**: Service running on different port than configured
+3. **Path mismatch**: Typo in the redirect path
+
+**Solution:**
+1. **Always use `127.0.0.1` consistently** - Update all URLs to use `127.0.0.1`:
+   ```yaml
+   # auth-adapter application.yml
+   redirect-uri: "http://127.0.0.1:9000/login/oauth2/code/test-auth-server"
+   ```
+
+2. **Verify registered URIs match** - Check test-auth-server configuration:
+   ```java
+   .redirectUri("http://127.0.0.1:9000/login/oauth2/code/test-auth-server")
+   ```
+
+3. **Access services via `127.0.0.1`**:
+   - Test-app: `http://127.0.0.1:8080`
+   - Auth-adapter: `http://127.0.0.1:9000`
+   - Test-auth-server: `http://127.0.0.1:9001`
+
+4. **Clear browser cache and cookies** after configuration changes
+
+5. **Check logs** for the actual redirect URI being sent:
+   ```bash
+   # Look for the redirect_uri parameter in auth-adapter logs
+   # with logging.level.org.springframework.security.oauth2: TRACE
+   ```
+
+**Verification:**
+```bash
+# Check the authorization request parameters
+# The redirect_uri parameter should exactly match a registered URI
+curl -v 'http://127.0.0.1:9001/oauth2/authorize?client_id=test-client&redirect_uri=http://127.0.0.1:9000/login/oauth2/code/test-auth-server&response_type=code&scope=openid%20profile'
+```
+
 ### Issue: Token Doesn't Contain Test-Auth-Server Sub
 
 **Symptom:** JWT token's `sub` claim is not from test-auth-server
