@@ -31,9 +31,9 @@ chained-auth-poc/
 - **Port**: 9000
 - **Type**: Spring Authorization Server with GitHub OAuth integration
 - **Endpoints**:
-  - Home: `http://localhost:9000/`
-  - User Info: `http://localhost:9000/user`
-  - OIDC Config: `http://localhost:9000/.well-known/oauth-authorization-server`
+  - Home: `http://127.0.0.1:9000/`
+  - User Info: `http://127.0.0.1:9000/user`
+  - OIDC Config: `http://127.0.0.1:9000/.well-known/oauth-authorization-server`
 - **Purpose**: Acts as an OAuth2 Authorization Server that federates authentication to GitHub
 - See [Auth Adapter README](applications/auth-adapter/README.md) for setup instructions
 
@@ -41,8 +41,8 @@ chained-auth-poc/
 - **Port**: 8080
 - **Type**: OAuth2 Client application for testing authentication flow
 - **Endpoints**:
-  - Home: `http://localhost:8080/`
-  - Authenticated: `http://localhost:8080/authenticated` (requires login)
+  - Home: `http://127.0.0.1:8080/`
+  - Authenticated: `http://127.0.0.1:8080/authenticated` (requires login)
 - **Purpose**: Demonstrates OAuth2 authentication flow and displays access tokens
 - See [Test App README](applications/test-app/README.md) for details
 
@@ -72,7 +72,7 @@ Run Test App:
 **Testing the Complete Flow:**
 1. Start auth-adapter on port 9000
 2. Start test-app on port 8080
-3. Open http://localhost:8080 in your browser
+3. Open http://127.0.0.1:8080 in your browser
 4. Click "Login with Auth Adapter"
 5. Authenticate with GitHub (via auth-adapter)
 6. View your access token and user information
@@ -119,8 +119,8 @@ To add a new application to the `applications` folder:
 ## Health Checks
 
 The applications expose actuator endpoints:
-- Auth Adapter: `http://localhost:9000/actuator/health`
-- Test App: `http://localhost:8080/actuator/health`
+- Auth Adapter: `http://127.0.0.1:9000/actuator/health`
+- Test App: `http://127.0.0.1:8080/actuator/health`
 
 ## CI/CD
 

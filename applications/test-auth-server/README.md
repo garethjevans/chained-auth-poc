@@ -42,7 +42,6 @@ A pre-configured OAuth2 client for testing:
 - **Client Secret**: `test-secret`
 - **Redirect URIs**: 
   - `http://127.0.0.1:8080/login/oauth2/code/test-auth-server`
-  - `http://localhost:8080/login/oauth2/code/test-auth-server`
 - **Scopes**: `openid`, `profile`, `email`, `read`, `write`
 - **Grant Types**: `authorization_code`, `refresh_token`, `client_credentials`
 - **Authorization Consent**: Disabled (for easier testing)
@@ -179,4 +178,4 @@ Make sure to update the issuer URI accordingly.
 
 ### Connection Issues
 
-Ensure you're using `127.0.0.1` consistently (not mixing with `localhost`) as OAuth2 redirect URIs must match exactly.
+Always use `127.0.0.1` (not `localhost`) as OAuth2 redirect URIs must match exactly what's registered in the authorization server.
