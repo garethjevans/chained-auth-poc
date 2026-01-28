@@ -5,6 +5,7 @@ spring:
   session:
     cookie:
       name: AUTH_ADAPTER_SESSION
+      secure: false
   
   security:
     oauth2:
