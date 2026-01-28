@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: test-auth-server
+
+  session:
+    cookie:
+      name: TEST_AUTH_SERVER_SESSION
+      secure: false
+
+server:
+  port: 9001
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: DEBUG
