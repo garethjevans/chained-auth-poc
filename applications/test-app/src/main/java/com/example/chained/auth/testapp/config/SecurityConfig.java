@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
   @Bean
@@ -15,7 +15,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/", "/error", "/webjars/**", "/actuator/**")
+                    .requestMatchers("/", "/favicon.ico", "/error", "/webjars/**", "/actuator/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

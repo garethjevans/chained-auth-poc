@@ -2,13 +2,13 @@ spring:
   application:
     name: test-auth-server
 
-  session:
-    cookie:
-      name: TEST_AUTH_SERVER_SESSION
-      secure: false
-
 server:
   port: 9001
+  servlet:
+    session:
+      cookie:
+        name: TEST_AUTH_SERVER_SESSION
+        secure: false
 
 management:
   endpoints:
@@ -18,5 +18,6 @@ management:
 
 logging:
   level:
-    org.springframework.security: INFO
-    org.springframework.security.oauth2: DEBUG
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+    org.springframework.web.cors: DEBUG

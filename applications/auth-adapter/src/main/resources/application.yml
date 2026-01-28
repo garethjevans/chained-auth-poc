@@ -1,12 +1,7 @@
 spring:
   application:
     name: auth-adapter
-  
-  session:
-    cookie:
-      name: AUTH_ADAPTER_SESSION
-      secure: false
-  
+
   security:
     oauth2:
       client:
@@ -16,7 +11,7 @@ spring:
             client-id: test-client
             client-secret: test-secret
             authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:9000/login/oauth2/code/test-auth-server"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - openid
               - profile
@@ -38,6 +33,12 @@ spring:
 
 server:
   port: 9000
+  servlet:
+    session:
+      cookie:
+        name: AUTH_ADAPTER_SESSION
+        secure: false
+
 
 management:
   endpoints:
@@ -49,3 +50,4 @@ logging:
   level:
     org.springframework.security: TRACE
     org.springframework.security.oauth2: TRACE
+    org.springframework.web.cors: DEBUG

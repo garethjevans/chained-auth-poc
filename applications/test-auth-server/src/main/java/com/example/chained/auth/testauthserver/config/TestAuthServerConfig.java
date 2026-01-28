@@ -40,7 +40,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
  * OAuth2/OIDC server with hardcoded test users.
  */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class TestAuthServerConfig {
 
   @Bean
@@ -95,8 +95,9 @@ public class TestAuthServerConfig {
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
             // Auth-adapter redirect URIs
             .redirectUri("http://127.0.0.1:9000/login/oauth2/code/test-auth-server")
+            .redirectUri("http://127.0.0.1:9000/login/oauth2/code/github")
             // Test-app redirect URIs
-            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/test-auth-server")
+            .redirectUri("http://127.0.0.1:8080/login/oauth2/code/auth-adapter")
             .postLogoutRedirectUri("http://127.0.0.1:8080/")
             .postLogoutRedirectUri("http://127.0.0.1:9000/")
             .scope(OidcScopes.OPENID)

@@ -34,7 +34,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class AuthorizationServerConfig {
 
   private final OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer;
@@ -68,13 +68,22 @@ public class AuthorizationServerConfig {
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             (authorize) ->
-                authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated())
+                authorize
+                    .requestMatchers("/favicon.ico", "/actuator/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         // OAuth2 login with test-auth-server as primary authentication
         .oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server"));
 
     return http.build();
   }
 
+  /**
+   * This bean should not be required to be registered here. It would be part of the DCR flow.
+   *
+   * @return the test-app client
+   */
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
     RegisteredClient registeredClient =
@@ -90,7 +99,7 @@ public class AuthorizationServerConfig {
             .scope(OidcScopes.PROFILE)
             .scope("read")
             .scope("write")
-            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
             .build();
 
     return new InMemoryRegisteredClientRepository(registeredClient);
