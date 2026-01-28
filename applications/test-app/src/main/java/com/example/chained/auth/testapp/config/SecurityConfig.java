@@ -10,18 +10,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/error", "/webjars/**", "/actuator/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/authenticated", true)
-                )
-                .oauth2Client(oauth2 -> {});
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers("/", "/error", "/webjars/**", "/actuator/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/authenticated", true))
+        .oauth2Client(oauth2 -> {});
 
-        return http.build();
-    }
+    return http.build();
+  }
 }

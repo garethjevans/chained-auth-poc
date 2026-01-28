@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TestAuthServerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(TestAuthServerApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(TestAuthServerApplication.class, args);
+  }
 }

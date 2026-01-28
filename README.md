@@ -6,13 +6,15 @@ A multi-module Gradle project demonstrating Spring Boot applications with a chai
 
 ```
 chained-auth-poc/
-├── applications/          # Spring Boot application modules
-│   ├── auth-adapter/     # Spring Authorization Server (port 9000)
-│   └── test-app/         # OAuth2 test client application (port 8080)
-├── gradle/               # Gradle wrapper files
-├── build.gradle.kts      # Root build configuration
-├── settings.gradle.kts   # Multi-module settings
-└── gradlew              # Gradle wrapper script
+├── applications/             # Spring Boot application modules
+│   ├── auth-adapter/        # Spring Authorization Server (port 9000)
+│   ├── test-app/            # OAuth2 test client application (port 8080)
+│   └── test-auth-server/    # Dummy auth server for E2E testing (port 9001)
+├── gradle/                  # Gradle wrapper files
+├── build.gradle.kts         # Root build configuration
+├── settings.gradle.kts      # Multi-module settings
+├── FORMATTING.md            # Code formatting guide
+└── gradlew                  # Gradle wrapper script
 ```
 
 ## Technology Stack
@@ -124,6 +126,7 @@ The applications expose actuator endpoints:
 
 The project includes a GitHub Actions workflow that:
 - Runs on every pull request and push to main/master
+- **Validates code formatting** with Spotless
 - Builds the project with Gradle
 - Runs all tests
 - Uploads test results and build artifacts
@@ -131,6 +134,22 @@ The project includes a GitHub Actions workflow that:
 See [`.github/workflows/gradle-build.yml`](.github/workflows/gradle-build.yml) for details.
 
 ## Development
+
+### Code Formatting
+
+This project uses **Spotless** with **Google Java Format** for consistent code formatting.
+
+**Check formatting:**
+```bash
+./gradlew spotlessCheck
+```
+
+**Apply formatting:**
+```bash
+./gradlew spotlessApply
+```
+
+See [FORMATTING.md](FORMATTING.md) for detailed information on code formatting, IDE integration, and best practices.
 
 ### IDE Setup
 Import the project as a Gradle project in your IDE (IntelliJ IDEA, Eclipse, VS Code).
@@ -141,6 +160,8 @@ Import the project as a Gradle project in your IDE (IntelliJ IDEA, Eclipse, VS C
 - `./gradlew clean` - Clean build directories
 - `./gradlew build --refresh-dependencies` - Refresh dependencies
 - `./gradlew projects` - List all modules
+- `./gradlew spotlessCheck` - Check code formatting
+- `./gradlew spotlessApply` - Apply code formatting
 
 ## License
 
