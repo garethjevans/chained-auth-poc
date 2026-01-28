@@ -219,6 +219,33 @@ This configuration is designed for local development and testing:
 
 ## Troubleshooting
 
+### Issue: "The request was rejected because the URL contained a potentially malicious String ';'"
+
+**Symptom:** Error message: `The request was rejected because the URL contained a potentially malicious String ";"`
+
+**Root Cause:** Spring Security's `StrictHttpFirewall` blocks URLs containing semicolons by default. OAuth2 authorization requests can contain semicolons in:
+- JSESSIONID cookies in URLs
+- Encoded scope parameters
+- Other OAuth2 state parameters
+
+**Solution:** This has been fixed by configuring a custom `HttpFirewall` in both auth-adapter and test-auth-server that allows semicolons while maintaining other security restrictions.
+
+**Configuration Applied:**
+```java
+@Bean
+public HttpFirewall allowSemicolonHttpFirewall() {
+  StrictHttpFirewall firewall = new StrictHttpFirewall();
+  firewall.setAllowSemicolon(true);
+  // Other security settings remain strict
+  return firewall;
+}
+```
+
+**If you still see this error:**
+1. Ensure you're running the latest version with `HttpFirewallConfig`
+2. Restart all services after updating
+3. Clear browser cookies and cache
+
 ### Issue: Redirect Loop
 
 **Symptom:** Browser keeps redirecting between services
