@@ -93,10 +93,16 @@ public class TestAuthServerConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            // Auth-adapter redirect URIs
+            .redirectUri("http://127.0.0.1:9000/login/oauth2/code/test-auth-server")
+            .redirectUri("http://localhost:9000/login/oauth2/code/test-auth-server")
+            // Test-app redirect URIs
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/test-auth-server")
             .redirectUri("http://localhost:8080/login/oauth2/code/test-auth-server")
             .postLogoutRedirectUri("http://127.0.0.1:8080/")
             .postLogoutRedirectUri("http://localhost:8080/")
+            .postLogoutRedirectUri("http://127.0.0.1:9000/")
+            .postLogoutRedirectUri("http://localhost:9000/")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .scope(OidcScopes.EMAIL)

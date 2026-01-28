@@ -1,17 +1,9 @@
 spring:
-  application:
-    name: auth-adapter
-  
-  session:
-    cookie:
-      name: AUTH_ADAPTER_SESSION
-      secure: false
-  
   security:
     oauth2:
       client:
         registration:
-          # Test Auth Server - Primary authentication
+          # Disable test-auth-server in tests
           test-auth-server:
             client-id: test-client
             client-secret: test-secret
@@ -20,32 +12,23 @@ spring:
             scope:
               - openid
               - profile
-          # GitHub - Secondary authentication for additional data
+          # Mock GitHub config for tests
           github:
-            client-id: ${GITHUB_CLIENT_ID:your-github-client-id}
-            client-secret: ${GITHUB_CLIENT_SECRET:your-github-client-secret}
+            client-id: test-github-client-id
+            client-secret: test-github-client-secret
             scope:
               - user:email
               - read:user
         provider:
+          # Use explicit URIs instead of issuer-uri to avoid discovery
           test-auth-server:
-            issuer-uri: http://127.0.0.1:9001
+            authorization-uri: http://localhost:9001/oauth2/authorize
+            token-uri: http://localhost:9001/oauth2/token
+            user-info-uri: http://localhost:9001/userinfo
+            jwk-set-uri: http://localhost:9001/oauth2/jwks
+            user-name-attribute: sub
           github:
             authorization-uri: https://github.com/login/oauth/authorize
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
             user-name-attribute: login
-
-server:
-  port: 9000
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-
-logging:
-  level:
-    org.springframework.security: TRACE
-    org.springframework.security.oauth2: TRACE

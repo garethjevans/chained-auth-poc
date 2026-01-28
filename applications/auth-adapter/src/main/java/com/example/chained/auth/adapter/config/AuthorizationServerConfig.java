@@ -27,6 +27,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -34,6 +36,12 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
+
+  private final OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer;
+
+  public AuthorizationServerConfig(OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer) {
+    this.tokenCustomizer = tokenCustomizer;
+  }
 
   @Bean
   @Order(1)
@@ -45,12 +53,11 @@ public class AuthorizationServerConfig {
               authorizationServer.oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
             })
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
-        // Redirect to the login page when not authenticated from the
-        // authorization endpoint
+        // Redirect to the test-auth-server login when not authenticated
         .exceptionHandling(
             (exceptions) ->
                 exceptions.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/github"),
+                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/test-auth-server"),
                     new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
     return http.build();
@@ -62,9 +69,8 @@ public class AuthorizationServerConfig {
     http.authorizeHttpRequests(
             (authorize) ->
                 authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated())
-        // Form login handles the redirect to the login page from the
-        // authorization server filter chain
-        .oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/github"));
+        // OAuth2 login with test-auth-server as primary authentication
+        .oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server"));
 
     return http.build();
   }
