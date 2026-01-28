@@ -168,6 +168,48 @@
             color: #667eea;
             margin-right: 10px;
         }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .claim-key {
+            font-weight: 600;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .claim-value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -206,6 +248,28 @@
                     ⚠️ Token expires soon! Only <strong th:text="${tokenInfo.expiresIn}">seconds</strong> seconds remaining
                 </div>
             </div>
+        </div>
+        
+        <div class="card" th:if="${jwtClaims != null and !jwtClaims.isEmpty()}">
+            <h2>🔓 Decoded JWT Claims</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                These are the claims extracted from the JWT access token. 
+                <strong>Note:</strong> This decoding is for display purposes only and does not verify the token signature.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Claim</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="entry : ${jwtClaims}">
+                        <td class="claim-key" th:text="${entry.key}">claim</td>
+                        <td class="claim-value" th:text="${entry.value}">value</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
         <div class="card" th:if="${userInfo.name != null}">
