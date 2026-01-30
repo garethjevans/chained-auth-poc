@@ -15,11 +15,9 @@ public class PocAuthTokenCustomizer implements OAuth2TokenCustomizer<JwtEncoding
   public void customize(JwtEncodingContext context) {
     // load the token from the db
     String accessToken =
-        (String)
-            context
-                .getAuthorization()
-                .getAttributes()
-                .get(PocOAuth2AuthorizationCodeRequestAuthenticationProvider.ACCESS_TOKEN_KEY);
+        context
+            .getAuthorization()
+            .getAttribute(PocOAuth2AuthorizationCodeRequestAuthenticationProvider.ACCESS_TOKEN_KEY);
     LOGGER.debug("XXXXXXXXXXX Loaded raw access token from attributes: {}", accessToken);
     context
         .getClaims()

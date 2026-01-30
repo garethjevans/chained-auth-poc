@@ -17,6 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -39,14 +45,17 @@ public class AuthorizationServerConfig {
 
   @Bean
   @Order(1)
-  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+  public SecurityFilterChain authorizationServerSecurityFilterChain(
+      HttpSecurity http, OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager)
       throws Exception {
-    http.oauth2AuthorizationServer(
+    http.oauth2Client(Customizer.withDefaults())
+        .oauth2AuthorizationServer(
             (authorizationServer) -> {
               http.securityMatcher(authorizationServer.getEndpointsMatcher());
               authorizationServer.oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
               authorizationServer.addObjectPostProcessor(
-                  PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(http));
+                  PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(
+                      http, oAuth2AuthorizedClientManager));
             })
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
         // Redirect to the test-auth-server login when not authenticated
@@ -54,10 +63,29 @@ public class AuthorizationServerConfig {
             (exceptions) ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/test-auth-server"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
-        .oauth2Client(Customizer.withDefaults());
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
     return http.build();
+  }
+
+  @Bean
+  public OAuth2AuthorizedClientManager authorizedClientManager(
+      ClientRegistrationRepository clientRegistrationRepository,
+      OAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+    OAuth2AuthorizedClientProvider authorizedClientProvider =
+        OAuth2AuthorizedClientProviderBuilder.builder()
+            .authorizationCode()
+            //                    .refreshToken()
+            //                    .clientCredentials()
+            .build();
+
+    DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+        new DefaultOAuth2AuthorizedClientManager(
+            clientRegistrationRepository, authorizedClientRepository);
+    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+    return authorizedClientManager;
   }
 
   @Bean
