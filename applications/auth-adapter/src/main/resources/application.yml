@@ -22,6 +22,7 @@ spring:
             scope:
               - user:email
               - read:user
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           test-auth-server:
             issuer-uri: http://127.0.0.1:9001
@@ -50,6 +51,6 @@ logging:
   level:
     root: INFO
     org.springframework: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: TRACE
     org.springframework.web.cors: DEBUG
     com.example.chained: DEBUG
