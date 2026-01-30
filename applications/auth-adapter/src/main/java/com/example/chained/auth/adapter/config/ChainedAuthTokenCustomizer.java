@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -13,7 +15,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -22,16 +23,20 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * This enables chained authentication where the primary identity comes from test-auth-server and
  * additional data comes from GitHub.
  */
-@Component
+// @Component
 public class ChainedAuthTokenCustomizer implements OAuth2TokenCustomizer<JwtEncodingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ChainedAuthTokenCustomizer.class);
   private static final String TEST_AUTH_SERVER_AUTH_KEY = "TEST_AUTH_SERVER_AUTHENTICATION";
 
   private final OAuth2AuthorizedClientService authorizedClientService;
+  private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-  public ChainedAuthTokenCustomizer(OAuth2AuthorizedClientService authorizedClientService) {
+  public ChainedAuthTokenCustomizer(
+      OAuth2AuthorizedClientService authorizedClientService,
+      OAuth2AuthorizedClientManager authorizedClientManager) {
     this.authorizedClientService = authorizedClientService;
+    this.authorizedClientManager = authorizedClientManager;
   }
 
   @Override
@@ -79,15 +84,15 @@ public class ChainedAuthTokenCustomizer implements OAuth2TokenCustomizer<JwtEnco
     }
 
     // Add additional claims from GitHub if available
-    if (currentUser != null && "github".equals(currentRegistration)) {
-      LOGGER.info("Adding GitHub claims to JWT");
-      addGitHubClaims(context, currentUser, (OAuth2AuthenticationToken) authentication);
-    } else {
-      LOGGER.debug(
-          "Skipping GitHub claims - currentUser={}, registration={}",
-          currentUser != null ? "present" : "null",
-          currentRegistration);
-    }
+    // if (currentUser != null && "github".equals(currentRegistration)) {
+    LOGGER.info("Adding GitHub claims to JWT");
+    addGitHubClaims(context, currentUser);
+    //    } else {
+    //      LOGGER.debug(
+    //          "Skipping GitHub claims - currentUser={}, registration={}",
+    //          currentUser != null ? "present" : "null",
+    //          currentRegistration);
+    //    }
 
     // Add authorities from current authentication
     if (authentication != null) {
@@ -156,50 +161,49 @@ public class ChainedAuthTokenCustomizer implements OAuth2TokenCustomizer<JwtEnco
     }
   }
 
-  private void addGitHubClaims(
-      JwtEncodingContext context, OAuth2User githubUser, OAuth2AuthenticationToken oauth2Token) {
+  private void addGitHubClaims(JwtEncodingContext context, OAuth2User githubUser) {
     LOGGER.debug("Processing GitHub claims");
 
     int claimsAdded = 0;
 
-    // Add GitHub-specific claims with github_ prefix to avoid conflicts
-    String githubLogin = githubUser.getAttribute("login");
-    if (githubLogin != null) {
-      LOGGER.debug("Adding github_login: {}", githubLogin);
-      context.getClaims().claim("github_login", githubLogin);
-      claimsAdded++;
-    }
-
-    String githubName = githubUser.getAttribute("name");
-    if (githubName != null) {
-      LOGGER.debug("Adding github_name: {}", githubName);
-      context.getClaims().claim("github_name", githubName);
-      claimsAdded++;
-    }
-
-    String githubEmail = githubUser.getAttribute("email");
-    if (githubEmail != null) {
-      LOGGER.debug("Adding github_email: {}", githubEmail);
-      context.getClaims().claim("github_email", githubEmail);
-      claimsAdded++;
-    }
-
-    Integer githubId = githubUser.getAttribute("id");
-    if (githubId != null) {
-      LOGGER.debug("Adding github_id: {}", githubId);
-      context.getClaims().claim("github_id", githubId);
-      claimsAdded++;
-    }
-
-    String githubAvatarUrl = githubUser.getAttribute("avatar_url");
-    if (githubAvatarUrl != null) {
-      LOGGER.debug("Adding github_avatar_url: {}", githubAvatarUrl);
-      context.getClaims().claim("github_avatar_url", githubAvatarUrl);
-      claimsAdded++;
-    }
+    //    // Add GitHub-specific claims with github_ prefix to avoid conflicts
+    //    String githubLogin = githubUser.getAttribute("login");
+    //    if (githubLogin != null) {
+    //      LOGGER.debug("Adding github_login: {}", githubLogin);
+    //      context.getClaims().claim("github_login", githubLogin);
+    //      claimsAdded++;
+    //    }
+    //
+    //    String githubName = githubUser.getAttribute("name");
+    //    if (githubName != null) {
+    //      LOGGER.debug("Adding github_name: {}", githubName);
+    //      context.getClaims().claim("github_name", githubName);
+    //      claimsAdded++;
+    //    }
+    //
+    //    String githubEmail = githubUser.getAttribute("email");
+    //    if (githubEmail != null) {
+    //      LOGGER.debug("Adding github_email: {}", githubEmail);
+    //      context.getClaims().claim("github_email", githubEmail);
+    //      claimsAdded++;
+    //    }
+    //
+    //    Integer githubId = githubUser.getAttribute("id");
+    //    if (githubId != null) {
+    //      LOGGER.debug("Adding github_id: {}", githubId);
+    //      context.getClaims().claim("github_id", githubId);
+    //      claimsAdded++;
+    //    }
+    //
+    //    String githubAvatarUrl = githubUser.getAttribute("avatar_url");
+    //    if (githubAvatarUrl != null) {
+    //      LOGGER.debug("Adding github_avatar_url: {}", githubAvatarUrl);
+    //      context.getClaims().claim("github_avatar_url", githubAvatarUrl);
+    //      claimsAdded++;
+    //    }
 
     // Add GitHub access token
-    String githubAccessToken = getGitHubAccessToken(oauth2Token);
+    String githubAccessToken = getGitHubAccessToken();
     if (githubAccessToken != null) {
       LOGGER.info("Adding github_access_token to JWT (length: {})", githubAccessToken.length());
       context.getClaims().claim("github_access_token", githubAccessToken);
@@ -208,47 +212,57 @@ public class ChainedAuthTokenCustomizer implements OAuth2TokenCustomizer<JwtEnco
       LOGGER.warn("GitHub access token not available - will not be included in JWT");
     }
 
-    LOGGER.info(
-        "Successfully added {} GitHub claims: login={}, name={}, email={}, id={}, avatar={}, access_token={}",
-        claimsAdded,
-        githubLogin,
-        githubName,
-        githubEmail != null ? "[present]" : null,
-        githubId,
-        githubAvatarUrl != null ? "[present]" : null,
-        githubAccessToken != null ? "[present]" : null);
+    //    LOGGER.info(
+    //        "Successfully added {} GitHub claims: login={}, name={}, email={}, id={}, avatar={},
+    // access_token={}",
+    //        claimsAdded,
+    //        githubLogin,
+    //        githubName,
+    //        githubEmail != null ? "[present]" : null,
+    //        githubId,
+    //        githubAvatarUrl != null ? "[present]" : null,
+    //        githubAccessToken != null ? "[present]" : null);
   }
 
-  private String getGitHubAccessToken(OAuth2AuthenticationToken oauth2Token) {
+  private String getGitHubAccessToken() {
     LOGGER.debug("Attempting to retrieve GitHub access token");
 
-    try {
-      OAuth2AuthorizedClient authorizedClient =
-          authorizedClientService.loadAuthorizedClient(
-              oauth2Token.getAuthorizedClientRegistrationId(), oauth2Token.getName());
+    OAuth2AuthorizeRequest authorizeRequest =
+        OAuth2AuthorizeRequest.withClientRegistrationId("github")
+            .principal(SecurityContextHolder.getContext().getAuthentication())
+            //            .attribute(HttpServletRequest.class.getName(),
+            // requestAttributes.getRequest())
+            //            .attribute(HttpServletResponse.class.getName(),
+            // requestAttributes.getResponse())
+            .build();
 
-      if (authorizedClient == null) {
-        LOGGER.warn("No OAuth2AuthorizedClient found for GitHub");
-        return null;
-      }
+    // try {
+    OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
 
-      OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-      if (accessToken == null) {
-        LOGGER.warn("OAuth2AuthorizedClient exists but access token is null");
-        return null;
-      }
+    // oauth2Token.getAuthorizedClientRegistrationId(), oauth2Token.getName()
 
-      String tokenValue = accessToken.getTokenValue();
-      LOGGER.debug(
-          "Retrieved GitHub access token: type={}, expires={}",
-          accessToken.getTokenType() != null ? accessToken.getTokenType().getValue() : "null",
-          accessToken.getExpiresAt());
-
-      return tokenValue;
-    } catch (Exception e) {
-      LOGGER.error("Failed to retrieve GitHub access token", e);
+    if (authorizedClient == null) {
+      LOGGER.warn("No OAuth2AuthorizedClient found for GitHub");
       return null;
     }
+
+    OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+    if (accessToken == null) {
+      LOGGER.warn("OAuth2AuthorizedClient exists but access token is null");
+      return null;
+    }
+
+    String tokenValue = accessToken.getTokenValue();
+    LOGGER.debug(
+        "Retrieved GitHub access token: type={}, expires={}",
+        accessToken.getTokenType() != null ? accessToken.getTokenType().getValue() : "null",
+        accessToken.getExpiresAt());
+
+    return tokenValue;
+    //    } catch (Exception e) {
+    //      LOGGER.error("Failed to retrieve GitHub access token", e);
+    //      return null;
+    //    }
   }
 
   private OAuth2User getTestAuthServerUser() {

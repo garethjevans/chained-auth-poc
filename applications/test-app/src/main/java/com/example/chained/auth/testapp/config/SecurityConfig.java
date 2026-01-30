@@ -15,7 +15,8 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/", "/favicon.ico", "/error", "/webjars/**", "/actuator/**", "/logout")
+                    .requestMatchers(
+                        "/", "/favicon.ico", "/error", "/webjars/**", "/actuator/**", "/logout")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -27,7 +28,11 @@ public class SecurityConfig {
                     .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
-                    .deleteCookies("JSESSIONID", "TEST_APP_SESSION", "TEST_AUTH_SERVER_SESSION", "AUTH_ADAPTER_SESSION"));
+                    .deleteCookies(
+                        "JSESSIONID",
+                        "TEST_APP_SESSION",
+                        "TEST_AUTH_SERVER_SESSION",
+                        "AUTH_ADAPTER_SESSION"));
 
     return http.build();
   }
