@@ -18,6 +18,7 @@ management:
 
 logging:
   level:
-    org.springframework.security: TRACE
-    org.springframework.security.oauth2: TRACE
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.security: DEBUG
     org.springframework.web.cors: DEBUG

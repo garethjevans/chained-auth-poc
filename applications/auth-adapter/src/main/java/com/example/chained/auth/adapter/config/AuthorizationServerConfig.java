@@ -27,8 +27,6 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -37,11 +35,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 @EnableWebSecurity(debug = true)
 public class AuthorizationServerConfig {
 
-  private final OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer;
-
-  public AuthorizationServerConfig(OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer) {
-    this.tokenCustomizer = tokenCustomizer;
-  }
+  public AuthorizationServerConfig() {}
 
   @Bean
   @Order(1)
@@ -51,6 +45,8 @@ public class AuthorizationServerConfig {
             (authorizationServer) -> {
               http.securityMatcher(authorizationServer.getEndpointsMatcher());
               authorizationServer.oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
+              authorizationServer.addObjectPostProcessor(
+                  PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(http));
             })
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
         // Redirect to the test-auth-server login when not authenticated
@@ -58,7 +54,8 @@ public class AuthorizationServerConfig {
             (exceptions) ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/test-auth-server"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        .oauth2Client(Customizer.withDefaults());
 
     return http.build();
   }
@@ -74,7 +71,10 @@ public class AuthorizationServerConfig {
                     .anyRequest()
                     .authenticated())
         // OAuth2 login with test-auth-server as primary authentication
-        .oauth2Login(oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server"));
+        .oauth2Login(
+            oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server")
+            //   .successHandler(authenticationSuccessHandler)
+            );
 
     return http.build();
   }
