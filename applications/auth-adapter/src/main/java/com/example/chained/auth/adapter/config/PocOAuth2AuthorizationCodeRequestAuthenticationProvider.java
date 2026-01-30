@@ -18,8 +18,11 @@ import org.springframework.security.oauth2.server.authorization.authentication.O
 public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
     implements AuthenticationProvider {
 
-  private static final Logger log =
+  public static final String ACCESS_TOKEN_KEY = "access_token";
+
+  private static final Logger LOGGER =
       LoggerFactory.getLogger(PocOAuth2AuthorizationCodeRequestAuthenticationProvider.class);
+
   private final OAuth2AuthorizationCodeRequestAuthenticationProvider delegate;
   private final OAuth2AuthorizationService authorizationService;
 
@@ -33,7 +36,7 @@ public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
   @Override
   public @Nullable Authentication authenticate(Authentication authentication)
       throws AuthenticationException {
-    log.debug(
+    LOGGER.debug(
         "Xxxxxxxxx Authenticating OAuth2AuthorizationCodeRequestAuthenticationProvider {}",
         authentication);
     OAuth2AuthorizationCodeRequestAuthenticationToken updated =
@@ -44,11 +47,12 @@ public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
         authorizationService.findByToken(
             updated.getAuthorizationCode().getTokenValue(),
             new OAuth2TokenType(OAuth2ParameterNames.CODE));
-    log.debug("Xxxxxxxxx Found OAuth2AuthorizationCodeRequestAuthenticationToken {}", tokenFromDb);
+    LOGGER.debug(
+        "Xxxxxxxxx Found OAuth2AuthorizationCodeRequestAuthenticationToken {}", tokenFromDb);
 
     var tokenToSave =
         OAuth2Authorization.from(tokenFromDb)
-            .attributes(attr -> attr.put("access_token", "gho_sfsdfsdfsdfsdfsdfsdfsdfsdfsfd"))
+            .attributes(attr -> attr.put(ACCESS_TOKEN_KEY, "gho_sfsdfsdfsdfsdfsdfsdfsdfsdfsfd"))
             .build();
     authorizationService.save(tokenToSave);
 
@@ -61,7 +65,7 @@ public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
   }
 
   public static ObjectPostProcessor<AuthenticationProvider> postProcessor(HttpSecurity http) {
-    return new ObjectPostProcessor<AuthenticationProvider>() {
+    return new ObjectPostProcessor<>() {
 
       @Override
       public <O extends AuthenticationProvider> O postProcess(O object) {
