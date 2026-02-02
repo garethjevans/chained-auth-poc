@@ -4,17 +4,34 @@ spring:
   ai:
     mcp:
       server:
-        enabled: true
-        transport: http
+        name: github-mcp-server
+        version: 1.0.0
+        type: SYNC
+        instructions: |
+          This MCP server provides tools for accessing github tools.
+        capabilities:
+          tool: true
+          resource: false
+          prompt: false
+          completion: false
+        protocol: STATELESS
+        base-url: /
+        streamable-http:
+          mcp-endpoint: /mcp
 
 server:
   port: 8084
+  servlet:
+    session:
+      cookie:
+        secure: false
+        name: GITHUB_MCP_SESSION_ID
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,mcp
+        include: health,info
   endpoint:
     health:
       show-details: always
