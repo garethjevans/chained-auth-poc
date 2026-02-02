@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    // Spring Cloud Gateway with explicit version
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
+    // Spring Cloud Gateway
+    implementation(libs.spring.cloud.gateway.mvc)
     
     // Spring Boot Actuator
     implementation(libs.spring.boot.starter.actuator)

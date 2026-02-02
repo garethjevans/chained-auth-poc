@@ -17,6 +17,7 @@ equalsVerifier = "4.3.1"
 threeTenExtra = "1.8.0"
 mcpJavaSdk = "0.17.2"
 awaitility = "4.3.0"
+thymeleafSpringSecurityExtras = "3.1.3.RELEASE"
 
 [libraries]
 
@@ -26,6 +27,7 @@ spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-star
 spring-boot-starter-test-testContainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "springBoot" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
 spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "springBoot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
@@ -41,8 +43,10 @@ spring-boot-restclient = { module = "org.springframework.boot:spring-boot-restcl
 spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient", version.ref = "springBoot" }
 
 # Spring AI
+spring-ai-bom = { module = "org.springframework.ai:spring-ai-bom", version.ref = "springAi" }
 spring-ai-starter-model-openai = { module = "org.springframework.ai:spring-ai-starter-model-openai", version.ref = "springAi" }
 spring-ai-starter-mcp-client = { module = "org.springframework.ai:spring-ai-starter-mcp-client", version.ref = "springAi" }
+spring-ai-starter-mcp-server-webmvc = { module = "org.springframework.ai:spring-ai-starter-mcp-server-webmvc", version.ref = "springAi" }
 
 # Spring Cloud
 spring-cloud = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "springCloud" }
@@ -57,6 +61,7 @@ testContainers-postgres = { module = "org.testcontainers:testcontainers-postgres
 testContainers-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleafSpringSecurityExtras" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
