@@ -1,0 +1,2 @@
+# shortcut to running gradle compile task
+gradlew compileJava compileTestJava

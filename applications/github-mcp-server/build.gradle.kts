@@ -1,12 +1,6 @@
 plugins {
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
-    java
-}
-
-repositories {
-    mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
+    id("java.conventions")
+    alias(libs.plugins.spring.boot)
 }
 
 dependencies {
