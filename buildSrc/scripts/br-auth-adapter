@@ -1,0 +1,2 @@
+# shortcut to running gradle build
+gradlew :applications:auth-adapter:bootRun --args='--spring.profiles.active=local'
