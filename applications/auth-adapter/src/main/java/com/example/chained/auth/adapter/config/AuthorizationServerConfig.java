@@ -79,7 +79,7 @@ public class AuthorizationServerConfig {
                     .anyRequest()
                     .authenticated())
         // OAuth2 login with test-auth-server as primary authentication
-            .oauth2Client(Customizer.withDefaults())
+        .oauth2Client(Customizer.withDefaults())
         .oauth2Login(
             oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server")
             //   .successHandler(authenticationSuccessHandler)
@@ -90,19 +90,19 @@ public class AuthorizationServerConfig {
 
   @Bean
   public OAuth2AuthorizedClientManager authorizedClientManager(
-          ClientRegistrationRepository clientRegistrationRepository,
-          OAuth2AuthorizedClientRepository authorizedClientRepository) {
+      ClientRegistrationRepository clientRegistrationRepository,
+      OAuth2AuthorizedClientRepository authorizedClientRepository) {
 
     OAuth2AuthorizedClientProvider authorizedClientProvider =
-            OAuth2AuthorizedClientProviderBuilder.builder()
-                    .authorizationCode()
-                    //                    .refreshToken()
-                    //                    .clientCredentials()
-                    .build();
+        OAuth2AuthorizedClientProviderBuilder.builder()
+            .authorizationCode()
+            //                    .refreshToken()
+            //                    .clientCredentials()
+            .build();
 
     DefaultOAuth2AuthorizedClientManager authorizedClientManager =
-            new DefaultOAuth2AuthorizedClientManager(
-                    clientRegistrationRepository, authorizedClientRepository);
+        new DefaultOAuth2AuthorizedClientManager(
+            clientRegistrationRepository, authorizedClientRepository);
     authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
     return authorizedClientManager;
