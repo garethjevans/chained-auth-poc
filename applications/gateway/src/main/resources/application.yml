@@ -3,27 +3,32 @@ spring:
     name: gateway
   cloud:
     gateway:
-      routes:
-        - id: github-mcp-server
-          uri: http://localhost:8084
-          predicates:
-            - Path=/mcp/**
-          filters:
-            - StripPrefix=0
+      server:
+        webmvc:
+          routes:
+            - id: github-mcp-server
+              uri: http://localhost:8084
+              predicates:
+                - Path=/mcp,/mcp/**
+              filters:
+                - StripPrefix=0
 
 server:
-  port: 8080
+  port: 8085
+  servlet:
+    session:
+      cookie:
+        secure: false
+        name: GATEWAY_SESSION_ID
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: health,info
   endpoint:
     health:
       show-details: always
-    gateway:
-      enabled: true
 
 logging:
   level:
