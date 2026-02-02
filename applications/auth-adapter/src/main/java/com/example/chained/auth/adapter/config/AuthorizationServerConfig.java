@@ -57,13 +57,14 @@ public class AuthorizationServerConfig {
                   PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(
                       http, oAuth2AuthorizedClientManager));
             })
-        .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
+            .anonymous(Customizer.withDefaults())
+        .authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
         // Redirect to the test-auth-server login when not authenticated
-        .exceptionHandling(
-            (exceptions) ->
-                exceptions.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/test-auth-server"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+//        .exceptionHandling(
+//            (exceptions) ->
+//                exceptions.defaultAuthenticationEntryPointFor(
+//                    new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/test-auth-server"),
+//                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
     return http.build();
   }
@@ -77,13 +78,13 @@ public class AuthorizationServerConfig {
                     .requestMatchers("/favicon.ico", "/actuator/**")
                     .permitAll()
                     .anyRequest()
-                    .authenticated())
+                    .permitAll())
         // OAuth2 login with test-auth-server as primary authentication
-            .oauth2Client(Customizer.withDefaults())
-        .oauth2Login(
-            oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server")
-            //   .successHandler(authenticationSuccessHandler)
-            );
+            .oauth2Client(Customizer.withDefaults());
+//        .oauth2Login(
+//            oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server")
+//            //   .successHandler(authenticationSuccessHandler)
+//            );
 
     return http.build();
   }
