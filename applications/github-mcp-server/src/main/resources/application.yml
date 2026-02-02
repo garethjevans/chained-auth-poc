@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: github-mcp-server
+  ai:
+    mcp:
+      server:
+        enabled: true
+        transport: http
+
+server:
+  port: 8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,mcp
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.example.chained.auth.githubmcp: DEBUG
+    org.springframework.ai.mcp: DEBUG
