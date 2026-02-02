@@ -38,7 +38,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class AuthorizationServerConfig {
 
   public AuthorizationServerConfig() {}
@@ -69,26 +69,6 @@ public class AuthorizationServerConfig {
   }
 
   @Bean
-  public OAuth2AuthorizedClientManager authorizedClientManager(
-      ClientRegistrationRepository clientRegistrationRepository,
-      OAuth2AuthorizedClientRepository authorizedClientRepository) {
-
-    OAuth2AuthorizedClientProvider authorizedClientProvider =
-        OAuth2AuthorizedClientProviderBuilder.builder()
-            .authorizationCode()
-            //                    .refreshToken()
-            //                    .clientCredentials()
-            .build();
-
-    DefaultOAuth2AuthorizedClientManager authorizedClientManager =
-        new DefaultOAuth2AuthorizedClientManager(
-            clientRegistrationRepository, authorizedClientRepository);
-    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-    return authorizedClientManager;
-  }
-
-  @Bean
   @Order(2)
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
@@ -99,12 +79,33 @@ public class AuthorizationServerConfig {
                     .anyRequest()
                     .authenticated())
         // OAuth2 login with test-auth-server as primary authentication
+            .oauth2Client(Customizer.withDefaults())
         .oauth2Login(
             oauth2 -> oauth2.loginPage("/oauth2/authorization/test-auth-server")
             //   .successHandler(authenticationSuccessHandler)
             );
 
     return http.build();
+  }
+
+  @Bean
+  public OAuth2AuthorizedClientManager authorizedClientManager(
+          ClientRegistrationRepository clientRegistrationRepository,
+          OAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+    OAuth2AuthorizedClientProvider authorizedClientProvider =
+            OAuth2AuthorizedClientProviderBuilder.builder()
+                    .authorizationCode()
+                    //                    .refreshToken()
+                    //                    .clientCredentials()
+                    .build();
+
+    DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+            new DefaultOAuth2AuthorizedClientManager(
+                    clientRegistrationRepository, authorizedClientRepository);
+    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+    return authorizedClientManager;
   }
 
   /**

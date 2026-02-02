@@ -22,7 +22,7 @@ spring:
             scope:
               - user:email
               - read:user
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "{baseUrl}/authorize/oauth2/code/{registrationId}"
         provider:
           test-auth-server:
             issuer-uri: http://127.0.0.1:9001
