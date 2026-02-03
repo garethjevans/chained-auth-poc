@@ -10,6 +10,9 @@ dependencies {
     // Spring Boot Actuator
     implementation(libs.spring.boot.starter.actuator)
     
+    // JWT support
+    implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+    
     // Testing
     testImplementation(libs.spring.boot.starter.test)
 }
