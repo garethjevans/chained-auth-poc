@@ -1,5 +1,6 @@
 package org.garethjevans.chained.auth.gateway.config;
 
+import static org.garethjevans.chained.auth.gateway.filter.AuthenticationRequiredFilter.requireAuthentication;
 import static org.garethjevans.chained.auth.gateway.filter.JwtTokenModifierFilter.modifyBearerToken;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.uri;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
@@ -19,6 +20,7 @@ public class GatewayRouteConfig {
   public RouterFunction<ServerResponse> githubMcpServerRoute() {
     return route("github-mcp-server")
         .route(path("/mcp/**").or(path("/mcp")), http())
+        .filter(requireAuthentication())
         .before(uri("http://localhost:8084"))
         .before(modifyBearerToken())
         .build();
