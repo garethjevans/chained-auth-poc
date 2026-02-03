@@ -16,7 +16,7 @@ class AuthenticationRequiredFilterTest {
 
   private static final String TEST_HOST = "resource.example.com";
   private static final String EXPECTED_METADATA_URL =
-      "https://resource.example.com/.well-known/oauth-protected-resource";
+      "http://resource.example.com/.well-known/oauth-protected-resource";
 
   @Test
   void testFilterRejectsRequestWithNoAuthorizationHeader() throws Exception {
@@ -219,7 +219,7 @@ class AuthenticationRequiredFilterTest {
   void testFilterBuildsCorrectMetadataUrlForDifferentHosts() throws Exception {
     // Test with a different host
     String testHost = "api.example.org";
-    String expectedUrl = "https://api.example.org/.well-known/oauth-protected-resource";
+    String expectedUrl = "http://api.example.org/.well-known/oauth-protected-resource";
 
     MockHttpServletRequest mockRequest = new MockHttpServletRequest();
     mockRequest.setMethod("GET");

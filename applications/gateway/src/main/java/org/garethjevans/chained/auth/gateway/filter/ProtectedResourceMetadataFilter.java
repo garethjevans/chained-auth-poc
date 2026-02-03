@@ -21,7 +21,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 @Component
 public class ProtectedResourceMetadataFilter {
 
-  private static final Logger logger =
+  private static final Logger LOGGER =
       LoggerFactory.getLogger(ProtectedResourceMetadataFilter.class);
 
   private static final String WELL_KNOWN_PATH = "/.well-known/oauth-protected-resource";
@@ -41,7 +41,7 @@ public class ProtectedResourceMetadataFilter {
 
       // Check if this is a request to the well-known metadata endpoint
       if (WELL_KNOWN_PATH.equals(path)) {
-        logger.info("Serving OAuth protected resource metadata");
+        LOGGER.info("Serving OAuth protected resource metadata");
 
         try {
           // Build the resource metadata response per RFC 9728
@@ -70,6 +70,7 @@ public class ProtectedResourceMetadataFilter {
 
           // Convert to JSON
           String jsonResponse = objectMapper.writeValueAsString(metadata);
+          LOGGER.info("Serving OAuth protected resource metadata: {}", jsonResponse);
 
           // Return 200 OK with application/json content type
           return ServerResponse.status(HttpStatus.OK)
@@ -77,7 +78,7 @@ public class ProtectedResourceMetadataFilter {
               .body(jsonResponse);
 
         } catch (Exception e) {
-          logger.error("Failed to generate protected resource metadata", e);
+          LOGGER.error("Failed to generate protected resource metadata", e);
           return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
       }
