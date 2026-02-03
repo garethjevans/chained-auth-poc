@@ -2,6 +2,7 @@ package org.garethjevans.chained.auth.gateway.config;
 
 import static org.garethjevans.chained.auth.gateway.filter.AuthenticationRequiredFilter.requireAuthentication;
 import static org.garethjevans.chained.auth.gateway.filter.JwtTokenModifierFilter.modifyBearerToken;
+import static org.garethjevans.chained.auth.gateway.filter.ProtectedResourceMetadataFilter.serveProtectedResourceMetadata;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.uri;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
@@ -15,6 +16,14 @@ import org.springframework.web.servlet.function.ServerResponse;
 /** Configuration for Gateway routes with JWT token modification filter. */
 @Configuration
 public class GatewayRouteConfig {
+
+  @Bean
+  public RouterFunction<ServerResponse> protectedResourceMetadataRoute() {
+    return route("protected-resource-metadata")
+        .route(path("/.well-known/oauth-protected-resource"), http())
+        .filter(serveProtectedResourceMetadata())
+        .build();
+  }
 
   @Bean
   public RouterFunction<ServerResponse> githubMcpServerRoute() {
