@@ -1,17 +1,6 @@
 spring:
   application:
     name: gateway
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            - id: github-mcp-server
-              uri: http://localhost:8084
-              predicates:
-                - Path=/mcp,/mcp/**
-              filters:
-                - StripPrefix=0
 
 server:
   port: 8085
