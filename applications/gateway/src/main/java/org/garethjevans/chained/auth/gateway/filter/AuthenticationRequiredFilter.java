@@ -17,10 +17,10 @@ import org.springframework.web.servlet.function.ServerResponse;
 @Component
 public class AuthenticationRequiredFilter {
 
-  private static final Logger logger = LoggerFactory.getLogger(AuthenticationRequiredFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationRequiredFilter.class);
 
   private static final String RESOURCE_METADATA_URL_TEMPLATE =
-      "https://%s/.well-known/oauth-protected-resource";
+      "http://%s/.well-known/oauth-protected-resource";
 
   /**
    * Creates a filter function that checks for the presence of an Authorization header. If the
@@ -35,12 +35,16 @@ public class AuthenticationRequiredFilter {
       String authHeader = request.headers().firstHeader(HttpHeaders.AUTHORIZATION);
 
       if (authHeader == null || authHeader.trim().isEmpty()) {
-        logger.warn(
+        LOGGER.warn(
             "Request to {} rejected: No Authorization header present", request.uri().getPath());
 
         // Build the resource metadata URL from the request's host
         String host = request.uri().getHost();
-        String resourceMetadataUrl = String.format(RESOURCE_METADATA_URL_TEMPLATE, host);
+        String hostAndPort =
+            host + (request.uri().getPort() == -1 ? "" : ":" + request.uri().getPort());
+        String resourceMetadataUrl = String.format(RESOURCE_METADATA_URL_TEMPLATE, hostAndPort);
+
+        LOGGER.info("Setting {} to {}", HttpHeaders.WWW_AUTHENTICATE, resourceMetadataUrl);
 
         // Return 401 with WWW-Authenticate header as per RFC 9728
         return ServerResponse.status(HttpStatus.UNAUTHORIZED)

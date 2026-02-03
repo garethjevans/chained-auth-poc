@@ -10,6 +10,12 @@ dependencies {
     // Spring Boot Actuator
     implementation(libs.spring.boot.starter.actuator)
     
+    // Spring Boot Web (includes Jackson)
+    implementation(libs.spring.boot.starter.web)
+    
+    // Jackson for JSON serialization
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    
     // JWT support
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
     

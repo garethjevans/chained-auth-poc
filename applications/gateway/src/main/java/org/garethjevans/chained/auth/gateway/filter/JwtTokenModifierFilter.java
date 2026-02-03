@@ -18,7 +18,7 @@ import org.springframework.web.servlet.function.ServerRequest;
 @Component
 public class JwtTokenModifierFilter {
 
-  private static final Logger logger = LoggerFactory.getLogger(JwtTokenModifierFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenModifierFilter.class);
 
   private static final String BEARER_PREFIX = "Bearer ";
   private static final String ACCESS_TOKEN_CLAIM = "access_token";
@@ -34,7 +34,7 @@ public class JwtTokenModifierFilter {
       String authHeader = request.headers().firstHeader(HttpHeaders.AUTHORIZATION);
 
       if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-        logger.debug("No Bearer token found in Authorization header");
+        LOGGER.debug("No Bearer token found in Authorization header");
         return request;
       }
 
@@ -45,19 +45,19 @@ public class JwtTokenModifierFilter {
 
         // Log the subject claim
         String subject = claims.getStringClaim(SUB_CLAIM);
-        logger.info("Processing JWT with subject: {}", subject);
+        LOGGER.info("Processing JWT with subject: {}", subject);
 
         // Extract the access_token claim
         String accessToken = claims.getStringClaim(ACCESS_TOKEN_CLAIM);
 
         if (accessToken == null || accessToken.isEmpty()) {
-          logger.warn(
+          LOGGER.warn(
               "No access_token claim found in JWT for subject: {}, using original token", subject);
           return request;
         }
 
         // Replace the Authorization header with the new access token
-        logger.debug("Replacing Bearer token with access_token from JWT claims");
+        LOGGER.debug("Replacing Bearer token with access_token from JWT claims");
         return ServerRequest.from(request)
             .headers(
                 httpHeaders -> {
@@ -67,7 +67,7 @@ public class JwtTokenModifierFilter {
             .build();
 
       } catch (ParseException e) {
-        logger.error("Failed to parse JWT token: {}", e.getMessage());
+        LOGGER.error("Failed to parse JWT token: {}", e.getMessage(), e);
         return request;
       }
     };
