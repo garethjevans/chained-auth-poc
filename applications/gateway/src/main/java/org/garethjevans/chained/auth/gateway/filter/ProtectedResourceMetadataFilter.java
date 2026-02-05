@@ -63,7 +63,7 @@ public class ProtectedResourceMetadataFilter {
           metadata.put("bearer_methods_supported", List.of("header"));
 
           // OAuth 2.0 scope values used to request access to this protected resource
-          metadata.put("scopes_supported", List.of("openid", "profile", "email"));
+          metadata.put("scopes_supported", List.of("openid", "profile"));
 
           // Human-readable name of the protected resource
           metadata.put("resource_name", "Gateway Protected Resource");

@@ -48,8 +48,7 @@ public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
   public @Nullable Authentication authenticate(Authentication authentication)
       throws AuthenticationException {
     LOGGER.debug(
-        "Xxxxxxxxx Authenticating OAuth2AuthorizationCodeRequestAuthenticationProvider {}",
-        authentication);
+        "Authenticating OAuth2AuthorizationCodeRequestAuthenticationProvider {}", authentication);
     OAuth2AuthorizationCodeRequestAuthenticationToken updated =
         (OAuth2AuthorizationCodeRequestAuthenticationToken) delegate.authenticate(authentication);
 
@@ -58,13 +57,13 @@ public class PocOAuth2AuthorizationCodeRequestAuthenticationProvider
         authorizationService.findByToken(
             updated.getAuthorizationCode().getTokenValue(),
             new OAuth2TokenType(OAuth2ParameterNames.CODE));
-    LOGGER.debug(
-        "Xxxxxxxxx Found OAuth2AuthorizationCodeRequestAuthenticationToken {}", tokenFromDb);
+    LOGGER.debug("Found OAuth2AuthorizationCodeRequestAuthenticationToken {}", tokenFromDb);
 
     OAuth2AuthorizeRequest authorizeRequest =
         OAuth2AuthorizeRequest.withClientRegistrationId("github")
             .principal(SecurityContextHolder.getContext().getAuthentication())
             .build();
+
     OAuth2AccessToken accessToken =
         this.authorizedClientManager.authorize(authorizeRequest).getAccessToken();
 

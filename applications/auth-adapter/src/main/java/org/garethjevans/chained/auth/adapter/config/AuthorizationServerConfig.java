@@ -38,7 +38,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = true)
 public class AuthorizationServerConfig {
 
   public AuthorizationServerConfig() {}
@@ -73,11 +73,7 @@ public class AuthorizationServerConfig {
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             (authorize) ->
-                authorize
-                    .requestMatchers("/favicon.ico", "/actuator/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+                authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated())
         // OAuth2 login with test-auth-server as primary authentication
         .oauth2Client(Customizer.withDefaults())
         .oauth2Login(
@@ -96,8 +92,8 @@ public class AuthorizationServerConfig {
     OAuth2AuthorizedClientProvider authorizedClientProvider =
         OAuth2AuthorizedClientProviderBuilder.builder()
             .authorizationCode()
-            //                    .refreshToken()
-            //                    .clientCredentials()
+            // .refreshToken()
+            // .clientCredentials()
             .build();
 
     DefaultOAuth2AuthorizedClientManager authorizedClientManager =
@@ -123,11 +119,12 @@ public class AuthorizationServerConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/auth-adapter")
+            .redirectUri("cursor://anysphere.cursor-mcp/oauth/callback")
             .postLogoutRedirectUri("http://127.0.0.1:8080/")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
-            .scope("read")
-            .scope("write")
+            //            .scope("user:email")
+            //            .scope("read:user")
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
             .build();
 
