@@ -40,6 +40,7 @@ public class JwtTokenModifierFilter {
 
       try {
         String token = authHeader.substring(BEARER_PREFIX.length());
+        LOGGER.info("Bearer token was {}", token);
         SignedJWT jwt = SignedJWT.parse(token);
         JWTClaimsSet claims = jwt.getJWTClaimsSet();
 
@@ -55,6 +56,8 @@ public class JwtTokenModifierFilter {
               "No access_token claim found in JWT for subject: {}, using original token", subject);
           return request;
         }
+
+        LOGGER.info("Bearer token is now {}", accessToken);
 
         // Replace the Authorization header with the new access token
         LOGGER.debug("Replacing Bearer token with access_token from JWT claims");

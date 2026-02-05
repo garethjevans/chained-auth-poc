@@ -20,5 +20,5 @@ logging:
   level:
     root: INFO
     org.springframework: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: TRACE
     org.springframework.web.cors: DEBUG
