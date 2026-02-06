@@ -34,16 +34,17 @@ public class GitHubTools {
     String authHeader = extractAuthorizationHeader();
 
     try {
-      Map<String, Object> result =
-          webClient
-              .get()
-              .uri("/user")
-              .header("Authorization", authHeader)
-              .retrieve()
-              .bodyToMono(Map.class)
-              .block();
+      //      Map<String, Object> result =
+      //          webClient
+      //              .get()
+      //              .uri("/user")
+      //              .header("Authorization", authHeader)
+      //              .retrieve()
+      //              .bodyToMono(Map.class)
+      //              .block();
+      // return result != null ? result : new HashMap<>();
+      return Map.of("username", authHeader);
 
-      return result != null ? result : new HashMap<>();
     } catch (Exception error) {
       // Return error details as a map
       Map<String, Object> errorResult = new HashMap<>();
