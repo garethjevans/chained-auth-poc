@@ -9,7 +9,7 @@ dependencies {
     
     // Spring Boot Actuator
     implementation(libs.spring.boot.starter.actuator)
-    
+
     // Spring Boot Web (includes Jackson)
     implementation(libs.spring.boot.starter.web)
     

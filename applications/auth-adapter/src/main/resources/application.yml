@@ -16,9 +16,17 @@ spring:
               - openid
               - profile
           # GitHub - Secondary authentication for additional data
+#          github:
+#            client-id: ${GITHUB_CLIENT_ID:your-github-client-id}
+#            client-secret: ${GITHUB_CLIENT_SECRET:your-github-client-secret}
+#            scope:
+#              - user:email
+#              - read:user
+#            redirect-uri: "{baseUrl}/authorize/oauth2/code/{registrationId}"
           github:
-            client-id: ${GITHUB_CLIENT_ID:your-github-client-id}
-            client-secret: ${GITHUB_CLIENT_SECRET:your-github-client-secret}
+            client-id: fake-github-client
+            client-secret: fake-github-secret
+            provider: fake-github
             scope:
               - user:email
               - read:user
@@ -31,6 +39,8 @@ spring:
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
             user-name-attribute: login
+          fake-github:
+            issuer-uri: http://127.0.0.1:9001
 
 server:
   port: 9000
@@ -53,4 +63,4 @@ logging:
     org.springframework: DEBUG
     org.springframework.security: TRACE
     org.springframework.web.cors: DEBUG
-    com.example.chained: DEBUG
+    org.garethjevans: DEBUG

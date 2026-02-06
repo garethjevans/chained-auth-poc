@@ -9,6 +9,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -111,7 +114,37 @@ public class TestAuthServerConfig {
                     .build())
             .build();
 
-    return new InMemoryRegisteredClientRepository(testClient);
+    RegisteredClient fakeGithubClient =
+        RegisteredClient.withId(UUID.randomUUID().toString())
+            .clientId("fake-github-client")
+            .clientSecret("{noop}fake-github-secret")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            // .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            // .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            // Auth-adapter redirect URIs
+            .redirectUri("http://127.0.0.1:9000/authorize/oauth2/code/github")
+
+            //                    .scope(OidcScopes.OPENID)
+            //                    .scope(OidcScopes.PROFILE)
+            //                    .scope(OidcScopes.EMAIL)
+            .scope("read:user")
+            .scope("user:email")
+            .clientSettings(
+                ClientSettings.builder()
+                    .requireAuthorizationConsent(false) // Skip consent for testing
+                    .build())
+            .tokenSettings(
+                TokenSettings.builder()
+                    .accessTokenTimeToLive(Duration.ofMinutes(1))
+                    .refreshTokenTimeToLive(Duration.ofMinutes(10))
+                    .reuseRefreshTokens(false)
+                    .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                    .build())
+            .build();
+
+    return new InMemoryRegisteredClientRepository(testClient, fakeGithubClient);
   }
 
   @Bean
