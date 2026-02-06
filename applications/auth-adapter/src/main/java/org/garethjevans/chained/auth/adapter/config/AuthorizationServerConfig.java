@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
@@ -46,7 +47,9 @@ public class AuthorizationServerConfig {
   @Bean
   @Order(1)
   public SecurityFilterChain authorizationServerSecurityFilterChain(
-      HttpSecurity http, OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager)
+      HttpSecurity http,
+      OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager,
+      OAuth2AuthorizedClientService oAuth2AuthorizedClientService)
       throws Exception {
     http.oauth2Client(Customizer.withDefaults())
         .oauth2AuthorizationServer(
@@ -55,7 +58,7 @@ public class AuthorizationServerConfig {
               authorizationServer.oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
               authorizationServer.addObjectPostProcessor(
                   PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(
-                      http, oAuth2AuthorizedClientManager));
+                      http, oAuth2AuthorizedClientManager, oAuth2AuthorizedClientService));
             })
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
         // Redirect to the test-auth-server login when not authenticated
@@ -117,7 +120,7 @@ public class AuthorizationServerConfig {
             .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            // .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/auth-adapter")
             .redirectUri("cursor://anysphere.cursor-mcp/oauth/callback")
             .postLogoutRedirectUri("http://127.0.0.1:8080/")
