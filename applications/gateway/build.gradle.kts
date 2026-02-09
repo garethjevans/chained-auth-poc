@@ -17,7 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind")
     
     // JWT support
-    implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+    implementation("com.nimbusds:nimbus-jose-jwt:10.7")
     
     // Testing
     testImplementation(libs.spring.boot.starter.test)
