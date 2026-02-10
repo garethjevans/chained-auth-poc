@@ -38,5 +38,5 @@ management:
 
 logging:
   level:
-    com.example.chained.auth.githubmcp: DEBUG
+    org.garethjevans.chained.auth.githubmcp: DEBUG
     org.springframework.ai.mcp: DEBUG

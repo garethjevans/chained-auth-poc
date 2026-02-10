@@ -9,6 +9,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -58,6 +60,9 @@ public class AuthorizationServerConfig {
               authorizationServer.oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
               authorizationServer.addObjectPostProcessor(
                   PocOAuth2AuthorizationCodeRequestAuthenticationProvider.postProcessor(
+                      http, oAuth2AuthorizedClientManager, oAuth2AuthorizedClientService));
+              authorizationServer.addObjectPostProcessor(
+                  PocOAuth2RefreshTokenAuthenticationProvider.postProcessor(
                       http, oAuth2AuthorizedClientManager, oAuth2AuthorizedClientService));
             })
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
@@ -95,7 +100,7 @@ public class AuthorizationServerConfig {
     OAuth2AuthorizedClientProvider authorizedClientProvider =
         OAuth2AuthorizedClientProviderBuilder.builder()
             .authorizationCode()
-            // .refreshToken()
+            .refreshToken()
             // .clientCredentials()
             .build();
 
@@ -120,7 +125,7 @@ public class AuthorizationServerConfig {
             .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            // .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/auth-adapter")
             .redirectUri("cursor://anysphere.cursor-mcp/oauth/callback")
             .postLogoutRedirectUri("http://127.0.0.1:8080/")
@@ -129,6 +134,11 @@ public class AuthorizationServerConfig {
             //            .scope("user:email")
             //            .scope("read:user")
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
+            .tokenSettings(
+                TokenSettings.builder()
+                    .refreshTokenTimeToLive(Duration.ofMinutes(10))
+                    .accessTokenTimeToLive(Duration.ofMinutes(1))
+                    .build())
             .build();
 
     return new InMemoryRegisteredClientRepository(registeredClient);
