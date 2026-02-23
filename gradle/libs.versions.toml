@@ -13,7 +13,7 @@ springBoot = "4.0.2"
 springCloud = "2025.1.1"
 
 # testing utilities
-equalsVerifier = "4.3.1"
+equalsVerifier = "4.4.1"
 threeTenExtra = "1.8.0"
 mcpJavaSdk = "0.17.2"
 awaitility = "4.3.0"
