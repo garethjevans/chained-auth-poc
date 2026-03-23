@@ -9,7 +9,7 @@
 
 # BOM versions
 springAi = "2.0.0-M2"
-springBoot = "4.0.3"
+springBoot = "4.0.4"
 springCloud = "2025.1.1"
 
 # testing utilities
