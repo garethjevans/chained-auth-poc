@@ -17,7 +17,7 @@ equalsVerifier = "4.4.2"
 threeTenExtra = "1.8.0"
 mcpJavaSdk = "0.17.2"
 awaitility = "4.3.0"
-thymeleafSpringSecurityExtras = "3.1.3.RELEASE"
+thymeleafSpringSecurityExtras = "3.1.4.RELEASE"
 
 [libraries]
 
